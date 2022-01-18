@@ -1,0 +1,61 @@
+//resVentas
+//@host=localhost:3001
+@host=192.168.1.111:3001
+
+@aouth=http://{{host}}/api/auth
+@login=http://{{host}}/api/login
+@cita=http://{{host}}/api/cita
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3RldlBhdmV6IiwiaWF0IjoxNjQyMDA5OTgwLCJleHAiOjE2NDIwNTMxODB9.VrwfMO-wOQAYmID1xQpuREdHoOnqmCKJ80i50bKrXCU
+@token2 = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJzdGV2QGdtYWlsLmNvbSIsInVzZXJOYW1lIjoic3RldmFtIiwiaWQiOjEsImlhdCI6MTY0MjQ0NTkzNywiZXhwIjoxNjQyNDg5MTM3fQ.V3zJSnO6oQospyWVR0beRsckRuogERwP4k6ztTm_Ukg
+#############################################
+POST {{aouth}}
+Content-Type: application/json
+
+{
+  "name": "stevam",
+  "password": "PassPass123",
+  "email": "stev6@gmail.com"
+}
+
+#############################################
+POST {{login}}
+Content-Type: application/json
+
+{
+  "password": "PassPass123",
+  "email": "stev@gmail.com"
+}
+#############################################
+GET {{login}}
+x-access-token: {{token2}}
+#############################################
+GET {{cita}}
+x-access-token: {{token2}}
+#############################################
+POST {{cita}}
+x-access-token: {{token2}}
+Content-Type: application/json
+
+{
+  "title": "Citas",
+  "start": "2019-09-09T11:00:00",
+  "end": "2019-09-09T12:00:00",
+  "date": "2019-09-09T13:00:00",
+  "hora": "01:00"
+}
+#############################################
+PUT {{cita}}/2
+x-access-token: {{token2}}
+Content-Type: application/json
+
+{
+  "title": "Citas",
+  "start": "2019-09-09T11:00:00",
+  "end": "2019-09-09T12:00:00",
+  "date": "2019-09-09T13:00:00",
+  "hora": "01:00"
+}
+#############################################
+DELETE {{cita}}/3
+x-access-token: {{token2}}
