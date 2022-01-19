@@ -1,6 +1,6 @@
 //resVentas
-//@host=localhost:3001
-@host=192.168.1.111:3001
+@host=localhost:3001
+
 
 @aouth=http://{{host}}/api/auth
 @login=http://{{host}}/api/login
