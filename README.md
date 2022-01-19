@@ -1,6 +1,6 @@
 # Devil App
 
-[Devil_app_Link](http://159.223.147.188:3001/login)
+[Devil_app_Link](http://159.223.147.188:3001)
 
 Example endpoint
 [Link](http://159.223.147.188:3001/api)
@@ -73,4 +73,4 @@ You can create hour, update, delete your hour whith background color red, if hou
 ## Links
 [Frontend](https://github.com/Stev-189/Devil_app_frontend)
 [Backend](https://github.com/Stev-189/Devil_app_backend)
-[Devil_App](http://159.223.147.188:3001/login)
+[Devil_App](http://159.223.147.188:3001)

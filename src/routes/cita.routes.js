@@ -8,9 +8,7 @@ import { deleteCita, getCitas, postCita, putCita } from "../controllers/cita.con
 
 const router = Router();
 
-router.use(validateJWT);
-
-router.get('/api/cita', getCitas);
+router.get('/api/cita', validateJWT, getCitas);
 
 router.post('/api/cita',[
   check('title', 'Title is required').not().isEmpty(),
@@ -19,7 +17,7 @@ router.post('/api/cita',[
   check('date', 'date is required').custom(validateDate),
   check('hora', 'specify hora ("HH:mm") is required').custom(validateHora),
   validateBody
-], postCita);
+], validateJWT, postCita);
 
 router.put('/api/cita/:id',[
   check('title', 'Title is required').not().isEmpty(),
@@ -28,8 +26,8 @@ router.put('/api/cita/:id',[
   check('date', 'date is required').custom(validateDate),
   check('hora', 'specify hora ("HH:mm") is required').custom(validateHora),
   validateBody
-], putCita);
+], validateJWT, putCita);
 
-router.delete('/api/cita/:id', deleteCita);
+router.delete('/api/cita/:id', validateJWT, deleteCita);
 
 export default router;
