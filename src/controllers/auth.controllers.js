@@ -1,11 +1,10 @@
-import {response} from "express"
 import jwt from "jsonwebtoken";
 
 import { configDB, JWT_SECRET } from "../config";
 import { connect } from "../database";
 import { decrypt, encrypt } from "../helpers/crypt";
 
-export const createUser = async (req, res=response) => {
+export const createUser = async (req, res) => {
   const {name, email, password} = req.body;
   const crypPass = await encrypt(password);
 
@@ -13,12 +12,12 @@ export const createUser = async (req, res=response) => {
     const connection = await connect(configDB);
     const [existUser] = await connection.query('SELECT * FROM tb_users WHERE userEmail = ?',[email])
     connection.end();
-    if(existUser.length > 0){throw new Error(`el correo ${email} ya fue usado`)}
+    if(existUser.length > 0){throw new Error(`Email already exists`)}
 
     const connections= await connect(configDB);
     const [registerNewUser] = await connections.query('INSERT INTO tb_users(userName, userEmail, password) VALUES (?,?,?)', [name, email, crypPass]);
     connections.end();//cerramos la conexion
-    if(!(registerNewUser.insertId)){throw new Error(`Error ${name} no fue creado`)}
+    if(!(registerNewUser.insertId)){throw new Error(`Error saving the user`)}
 
     const token = jwt.sign({userEmail: email, userName: name, id: registerNewUser.insertId}, JWT_SECRET, {expiresIn: 43200});
     
@@ -42,16 +41,16 @@ export const createUser = async (req, res=response) => {
   }
 } 
 
-export const loginUser = async (req, res=response) => {
+export const loginUser = async (req, res) => {
   const {email, password} = req.body;
 
   try {
     const connection = await connect(configDB);
     const [existUser] = await connection.query('SELECT * FROM tb_users WHERE userEmail = ?',[email])
     connection.end();
-    if(existUser.length === 0){throw new Error(`Usuario o Password son incorrectos`)}
+    if(existUser.length === 0){throw new Error(`User or password incorrect`)}
     const passwordIsValid = await decrypt(password, existUser[0].password);
-    if(!passwordIsValid){throw new Error(`Usuario o Password son incorrectos`)}
+    if(!passwordIsValid){throw new Error(`User or password incorrect`)}
     const token = jwt.sign({userEmail: existUser[0].userEmail, userName: existUser[0].userName, id:existUser[0].id }, JWT_SECRET, {expiresIn: 43200});
 
     return res.status(201).json({
@@ -74,13 +73,14 @@ export const loginUser = async (req, res=response) => {
   }
 }
 
-export const reToken = async (req, res=response) => {
+export const reToken = async (req, res) => {
   const {userEmail, userName, id} = req;
   const token = jwt.sign({userEmail, userName, id }, JWT_SECRET, {expiresIn: 43200});
   return res.json({
     result: true,
     msg: 'User logged in successfully',
     data: {
+      id,
       name: userName,
       email: userEmail,
       token

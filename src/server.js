@@ -5,6 +5,7 @@ import cors from 'cors';
 import { PORT } from './config';
 import aouthRouter from './routes/auth.routes';
 import citaRouter from './routes/cita.routes';
+import helpRouter from './routes/help.routes';
 
 const app = express();
 
@@ -20,6 +21,6 @@ app.use(express.static('public'));
 
 app.use(aouthRouter);
 app.use(citaRouter);
-//app.use(helpRouter);
+app.use(helpRouter);
 
 export default app;

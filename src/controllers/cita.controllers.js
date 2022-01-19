@@ -1,9 +1,7 @@
-import {response} from "express"
-
 import { configDB } from "../config";
 import { connect } from "../database";
 
-export const getCitas = async (req, res=response) => {
+export const getCitas = async (req, res) => {
   try {
     const connection = await connect(configDB);
     const [citas]= await connection.query('SELECT * FROM tb_citas');
@@ -23,9 +21,9 @@ export const getCitas = async (req, res=response) => {
   }
 }
 
-export const postCita = async (req, res=response) => {
+export const postCita = async (req, res) => {
   const {title, start, end, date, hora} = req.body;
-  const {userEmail, userName, id} = req;
+  const {userEmail, userName, id: userId} = req;
   try {
     const connection = await connect(configDB);
     const [existCita]= await connection.query('SELECT * FROM tb_citas WHERE start= ?',[start]);
@@ -33,13 +31,13 @@ export const postCita = async (req, res=response) => {
     if(existCita.length > 0){throw new Error(`Hour for this date is already booked`)}
 
     const connection2 = await connect(configDB);
-    const [saveCita] = await connection2.query('INSERT INTO tb_citas (title, start, end, date, hora, userEmail, userName, userId) VALUES (?,?,?,?,?,?,?,?)',[title, start, end, date, hora, userEmail, userName, id]);
+    const [saveCita] = await connection2.query('INSERT INTO tb_citas (title, start, end, date, hora, userEmail, userName, userId) VALUES (?,?,?,?,?,?,?,?)',[title, start, end, date, hora, userEmail, userName, userId]);
     connection2.end();
     if(!(saveCita.insertId)){throw new Error(`Error saving the Hour`)}
     return res.status(201).json({
       result: true,
       msg: 'Hour saved successfully',
-      data: [{
+      data: {
         id: saveCita.insertId,
         title,
         start,
@@ -49,7 +47,7 @@ export const postCita = async (req, res=response) => {
         userEmail,
         userName,
         userId
-      }]
+      }
     })
     
   } catch (error) {
@@ -61,7 +59,7 @@ export const postCita = async (req, res=response) => {
   }
 }
 
-export const putCita = async (req, res=response) => {
+export const putCita = async (req, res) => {
   const {title, start, end, date, hora} = req.body;
   const {userEmail, userName, id:userId} = req;
   try {
@@ -85,7 +83,7 @@ export const putCita = async (req, res=response) => {
     return res.status(200).json({
       result: true,
       msg: 'Hour updated successfully',
-      data: [{
+      data: {
         id,
         title,
         start,
@@ -95,7 +93,7 @@ export const putCita = async (req, res=response) => {
         userEmail,
         userName,
         userId
-      }]
+      }
     })
     
   } catch (error) {
@@ -107,7 +105,7 @@ export const putCita = async (req, res=response) => {
   }
 }
 
-export const deleteCita = async (req, res=response) => {
+export const deleteCita = async (req, res) => {
   const {id:userId} = req;
   try {
     if(!(req.params.id)){throw new Error(`id cita is required`)}
@@ -125,9 +123,9 @@ export const deleteCita = async (req, res=response) => {
     return res.status(200).json({
       result: true,
       msg: 'Delete Hour successfully',
-      data: [{
+      data: {
         id
-      }]
+      }
     })
   } catch (error) {
     return res.status(401).json({

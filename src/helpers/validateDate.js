@@ -7,5 +7,5 @@ export const validateDate= (value) => {
 
 export const validateHora= (value) => {
   if(!value){ return false }
-  return value.match(/^[0-2][0-3]:[0-5][0-9]$/)
+  return value.match(/^[0-2][0-9]:[0-5][0-9]$/)
 }
